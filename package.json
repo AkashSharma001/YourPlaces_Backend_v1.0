@@ -1,11 +1,10 @@
 {
   "name": "nodejs",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "nodemon app.js"
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +15,8 @@
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "express-validator": "^6.14.2",
+    "firebase": "^9.9.4",
+    "firebase-admin": "^11.0.1",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.5.1",
     "mongoose-unique-validator": "^3.1.0",
@@ -26,5 +27,15 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.19"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AkashSharma001/YourPlaces_Backend_v1.0.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/AkashSharma001/YourPlaces_Backend_v1.0/issues"
+  },
+  "homepage": "https://github.com/AkashSharma001/YourPlaces_Backend_v1.0#readme",
+  "description": ""
 }

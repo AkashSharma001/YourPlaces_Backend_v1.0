@@ -6,6 +6,7 @@ const HttpError = require("../models/http-error");
 const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
 const User = require("../models/user");
+const { fileUpload, fileDelete } = require("../middleware/file-upload");
 
 const getPlaceById = async (req, res, next) => {
   const placeId = req.params.pid;
@@ -67,6 +68,7 @@ const createPlace = async (req, res, next) => {
   let coordinates;
   try {
     coordinates = await getCoordsForAddress(address);
+    req.file.path = await fileUpload(req, res);
   } catch (error) {
     return next(error);
   }
@@ -161,7 +163,7 @@ const deletePlace = async (req, res, next) => {
     place = await Place.findById(placeId).populate("creator");
   } catch (err) {
     const error = new HttpError(
-      "Something went wrong,could not update place",
+      "Something went wrong,could not delete this place",
       500
     );
     return next(error);
@@ -185,6 +187,7 @@ const deletePlace = async (req, res, next) => {
     place.creator.places.pull(place);
     await place.creator.save({ session: sess });
     await sess.commitTransaction();
+    await fileDelete(imagePath);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong,could not update place",
@@ -192,10 +195,6 @@ const deletePlace = async (req, res, next) => {
     );
     return next(error);
   }
-
-  fs.unlink(imagePath, (err) => {
-    console.log(err);
-  });
 
   res.status(200).json({ message: "Deleted place" });
 };

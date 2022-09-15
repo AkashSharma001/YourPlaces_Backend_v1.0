@@ -1,9 +1,11 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { v1: uuidv1 } = require("uuid");
 
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
+const { fileUpload } = require("../middleware/file-upload");
 
 const getUsers = async (req, res, next) => {
   let users;
@@ -25,6 +27,15 @@ const signup = async (req, res, next) => {
     return next(new HttpError("Invalid Input", 422));
   }
   const { name, email, password } = req.body;
+
+  // const file = req.file;
+  // const fileName = `${uuidv1()}.png`;
+  // console.log(fileName);
+  // const imageRef = ref(storage, fileName);
+  // const metatype = { contentType: file.mimetype, name: file.originalname };
+  // await uploadBytes(imageRef, file.buffer, metatype).catch((error) =>
+  //   console.log(error.message)
+  // );
 
   let existingUser;
   try {
@@ -48,6 +59,8 @@ const signup = async (req, res, next) => {
   let hashedPassword;
   try {
     hashedPassword = await bcrypt.hash(password, 12);
+    req.file.path = await fileUpload(req, res);
+    // console.log();
   } catch (err) {
     const error = new HttpError("Could not create user,Please try again", 500);
     return next(error);
@@ -60,6 +73,7 @@ const signup = async (req, res, next) => {
     password: hashedPassword,
     places: [],
   });
+  // console.log(req);
   try {
     await createdUser.save();
   } catch (err) {
